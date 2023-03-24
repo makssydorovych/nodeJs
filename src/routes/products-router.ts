@@ -1,5 +1,6 @@
 import {Request, Response, Router} from "express";
 import {productsRepository} from "../repositories/products-repository";
+import {body, validationResult} from "express-validator";
 
 export const productsRouter = Router({})
 
@@ -7,9 +8,16 @@ productsRouter.get('/', (req: Request, res: Response) => {
     const foundProduct = productsRepository.findProducts(req.query.title?.toString());
     res.send(foundProduct)
 })
-productsRouter.post('/', (req: Request, res: Response) => {
+productsRouter.post('/',  body('title').trim().isLength({min: 1, max: 30}).withMessage('Title length should be 1-30 symbols'),
+    (req: Request, res: Response) => {
+const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors: errors.array()})
+    }
     const newProduct = productsRepository.createProduct(req.body.title)
     res.status(201).send(newProduct)
+    return;
+
 
 })
 productsRouter.get('/:id', (req: Request, res: Response) => {

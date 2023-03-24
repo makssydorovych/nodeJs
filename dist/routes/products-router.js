@@ -3,15 +3,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.productsRouter = void 0;
 const express_1 = require("express");
 const products_repository_1 = require("../repositories/products-repository");
+const express_validator_1 = require("express-validator");
 exports.productsRouter = (0, express_1.Router)({});
 exports.productsRouter.get('/', (req, res) => {
     var _a;
     const foundProduct = products_repository_1.productsRepository.findProducts((_a = req.query.title) === null || _a === void 0 ? void 0 : _a.toString());
     res.send(foundProduct);
 });
-exports.productsRouter.post('/', (req, res) => {
+exports.productsRouter.post('/', (0, express_validator_1.body)('title').trim().isLength({ min: 1, max: 30 }).withMessage('Title length should be 1-30 symbols'), (req, res) => {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     const newProduct = products_repository_1.productsRepository.createProduct(req.body.title);
     res.status(201).send(newProduct);
+    return;
 });
 exports.productsRouter.get('/:id', (req, res) => {
     let product = products_repository_1.productsRepository.findProductById(+req.params.id);

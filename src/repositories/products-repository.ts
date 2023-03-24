@@ -1,3 +1,5 @@
+import {body} from "express-validator";
+
 const products = [{id: 1, title: 'tomato'},
     {id: 2, title: 'orange'},
     {id: 3, title: 'banana'}]
@@ -11,6 +13,7 @@ export const productsRepository ={
         }
     },
     createProduct(title: string){
+
         const newProduct = {
             id: +(new Date()),
             title: title
