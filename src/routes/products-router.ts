@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {productsRepository, ProductType} from "../repositories/products-repository";
+import {productsRepository, ProductType} from "../repositories/products-in-memory-repository";
 import {body, validationResult} from "express-validator";
 
 export const productsRouter = Router({})

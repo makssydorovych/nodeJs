@@ -5,7 +5,7 @@ export type ProductType = {
 const products = [{id: 1, title: 'tomato'},
     {id: 2, title: 'orange'},
     {id: 3, title: 'banana'}]
-export const productsRepository = {
+export const productsDbRepository = {
     async findProducts(title: string | undefined | null): Promise<ProductType[]> {
         if (title) {
             return (products.filter(p => p.title.indexOf(title) > -1));

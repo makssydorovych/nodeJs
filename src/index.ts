@@ -1,7 +1,8 @@
-import express, {Request, Response} from 'express'
+import express from 'express'
 import bodyParser from 'body-parser'
 import {productsRouter} from "./routes/products-router";
 import {addressesRouter} from "./routes/adresses-router";
+import {RunDb} from "./repositories/db"
 const app = express()
 const port = process.env.PROT || 5000
 
