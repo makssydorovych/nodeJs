@@ -11,6 +11,13 @@ app.use(parserMiddleware)
 
 app.use('/products', productsRouter)
 app.use('/addresses', addressesRouter)
-app.listen(port, () => {
-    console.log(`kkkkkk${port}`)
-})
+// app.listen(port, () => {
+//     console.log(`kkkkkk${port}`)
+// })
+const startApp = async()=>{
+    await RunDb()
+    app.listen(port, ()=>{
+        console.log('LOG')
+    })
+}
+startApp()
