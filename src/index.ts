@@ -21,4 +21,4 @@ const startApp = async()=>{
         console.log('LOG')
     })
 }
-startApp()
+startApp();

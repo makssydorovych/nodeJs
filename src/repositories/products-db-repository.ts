@@ -1,16 +1,14 @@
-export type ProductType = {
-        id: number,
-        title: string
-    }
-const products = [{id: 1, title: 'tomato'},
-    {id: 2, title: 'orange'},
-    {id: 3, title: 'banana'}]
+import { ProductType, productTypeCollection} from "./db";
+
+
+
 export const productsDbRepository = {
     async findProducts(title: string | undefined | null): Promise<ProductType[]> {
+
         if (title) {
-            return (products.filter(p => p.title.indexOf(title) > -1));
+           return await productTypeCollection.find({title: {$regex: title}}).toArray()
         } else {
-            return products;
+             return await productTypeCollection.find().toArray()
         }
     },
     async createProduct(title: string):Promise<ProductType> {
@@ -18,29 +16,26 @@ export const productsDbRepository = {
             id: +(new Date()),
             title: title
         }
-        products.push(newProduct)
+        await productTypeCollection.insertOne(newProduct)
+
         return newProduct
     },
-    findProductById(id: number) {
-        let product = products.find(p => p.id === id)
-        return product;
-    },
-   async updateProduct(id: number, title: string):Promise<boolean> {
-        let product = products.find(p => p.id === id)
-        if (product) {
-            product.title = title
-            return true;
-        } else {
-            return false;
+    async findProductById(id: number): Promise<ProductType | null> {
+        let product: ProductType | null = await productTypeCollection.findOne({id: id})
+        if(product) {
+            return product;
+        }else {
+            return null
         }
     },
-    deleteProduct(id: number) {
-        for (let i = 0; i < products.length; i++) {
-            if (products[i].id === id) {
-                products.splice(i, 1);
-                return true;
-            }
+    async updateProduct(id: number, title: string):Promise<boolean> {
+       const result =  await productTypeCollection.updateOne({id:id},{$set:{title: title}})
+      return result.matchedCount === 1
+    },
+    async deleteProduct(id: number): Promise<boolean> {
+        const result = await productTypeCollection.deleteOne({id: id})
+        return result.deletedCount === 1
         }
-        return false;
-    }
+
+
 }

@@ -1,12 +1,11 @@
-export type ProductType = {
-        id: number,
-        title: string
-    }
+import {ProductType} from "./db";
+
 const products = [{id: 1, title: 'tomato'},
     {id: 2, title: 'orange'},
     {id: 3, title: 'banana'}]
 export const productsRepository = {
     async findProducts(title: string | undefined | null): Promise<ProductType[]> {
+
         if (title) {
             return (products.filter(p => p.title.indexOf(title) > -1));
         } else {
@@ -21,9 +20,13 @@ export const productsRepository = {
         products.push(newProduct)
         return newProduct
     },
-    findProductById(id: number) {
+    async findProductById(id: number): Promise<ProductType | null> {
         let product = products.find(p => p.id === id)
-        return product;
+        if(product) {
+            return product;
+        }else {
+            return null
+        }
     },
    async updateProduct(id: number, title: string):Promise<boolean> {
         let product = products.find(p => p.id === id)
@@ -34,7 +37,7 @@ export const productsRepository = {
             return false;
         }
     },
-    deleteProduct(id: number) {
+    async deleteProduct(id: number): Promise<boolean> {
         for (let i = 0; i < products.length; i++) {
             if (products[i].id === id) {
                 products.splice(i, 1);
