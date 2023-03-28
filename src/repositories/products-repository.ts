@@ -1,19 +1,19 @@
-import {body} from "express-validator";
-
+export type ProductType = {
+        id: number,
+        title: string
+    }
 const products = [{id: 1, title: 'tomato'},
     {id: 2, title: 'orange'},
     {id: 3, title: 'banana'}]
-export const productsRepository ={
-    findProducts(title: string | undefined | null){
+export const productsRepository = {
+    async findProducts(title: string | undefined | null): Promise<ProductType[]> {
         if (title) {
-            let filteredProduct = (products.filter(p => p.title.indexOf(title) > -1));
-            return filteredProduct;
+            return (products.filter(p => p.title.indexOf(title) > -1));
         } else {
             return products;
         }
     },
-    createProduct(title: string){
-
+    async createProduct(title: string):Promise<ProductType> {
         const newProduct = {
             id: +(new Date()),
             title: title
@@ -21,11 +21,11 @@ export const productsRepository ={
         products.push(newProduct)
         return newProduct
     },
-    findProductById(id: number){
+    findProductById(id: number) {
         let product = products.find(p => p.id === id)
-            return product;
+        return product;
     },
-    updateProduct(id: number, title: string){
+   async updateProduct(id: number, title: string):Promise<boolean> {
         let product = products.find(p => p.id === id)
         if (product) {
             product.title = title
@@ -34,7 +34,7 @@ export const productsRepository ={
             return false;
         }
     },
-    deleteProduct(id: number){
+    deleteProduct(id: number) {
         for (let i = 0; i < products.length; i++) {
             if (products[i].id === id) {
                 products.splice(i, 1);

@@ -1,20 +1,20 @@
 import {Request, Response, Router} from "express";
-import {productsRepository} from "../repositories/products-repository";
+import {productsRepository, ProductType} from "../repositories/products-repository";
 import {body, validationResult} from "express-validator";
 
 export const productsRouter = Router({})
 
-productsRouter.get('/', (req: Request, res: Response) => {
-    const foundProduct = productsRepository.findProducts(req.query.title?.toString());
+productsRouter.get('/',async (req: Request, res: Response) => {
+    const foundProduct : ProductType[] = await productsRepository.findProducts(req.query.title?.toString());
     res.send(foundProduct)
 })
 productsRouter.post('/',  body('title').trim().isLength({min: 1, max: 30}).withMessage('Title length should be 1-30 symbols'),
-    (req: Request, res: Response) => {
+    async(req: Request, res: Response) => {
 const errors = validationResult(req)
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()})
     }
-    const newProduct = productsRepository.createProduct(req.body.title)
+    const newProduct: ProductType =  await productsRepository.createProduct(req.body.title)
     res.status(201).send(newProduct)
     return;
 
@@ -40,8 +40,8 @@ productsRouter.delete('/:id', (req: Request, res: Response) => {
     }
 })
 
-productsRouter.put('/:id', (req: Request, res: Response) => {
-    const isUpdated = productsRepository.updateProduct(+req.params.id, req.body.title)
+productsRouter.put('/:id', async(req: Request, res: Response) => {
+    const isUpdated = await productsRepository.updateProduct(+req.params.id, req.body.title)
     if (isUpdated) {
         const product = productsRepository.findProductById(+req.params.id)
         res.send(product)
